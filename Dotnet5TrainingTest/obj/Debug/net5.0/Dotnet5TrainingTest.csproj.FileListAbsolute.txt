@@ -1,0 +1,5 @@
+D:\Learning ASP.NET Core\Dotnet5Traning\Dotnet5TrainingTest\obj\Debug\net5.0\Dotnet5TrainingTest.csprojAssemblyReference.cache
+D:\Learning ASP.NET Core\Dotnet5Traning\Dotnet5TrainingTest\obj\Debug\net5.0\Dotnet5TrainingTest.GeneratedMSBuildEditorConfig.editorconfig
+D:\Learning ASP.NET Core\Dotnet5Traning\Dotnet5TrainingTest\obj\Debug\net5.0\Dotnet5TrainingTest.AssemblyInfoInputs.cache
+D:\Learning ASP.NET Core\Dotnet5Traning\Dotnet5TrainingTest\obj\Debug\net5.0\Dotnet5TrainingTest.AssemblyInfo.cs
+D:\Learning ASP.NET Core\Dotnet5Traning\Dotnet5TrainingTest\obj\Debug\net5.0\Dotnet5TrainingTest.csproj.CoreCompileInputs.cache
