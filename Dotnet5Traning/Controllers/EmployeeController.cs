@@ -19,15 +19,15 @@ namespace Dotnet5Traning.Controllers
             _service = service;
         }
         [HttpPost("create-employee")]
-        public async Task<ActionResult<EmployeeDetails>> CreateEmployee([FromBody] EmployeeDetails emp)
-        {
-            if (emp != null)
-            {                
-                var employee = await _service.CreateEmployee(emp);
-                return Ok("Employee is succesfully added. "+employee.EmpId);
-            }
+        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDetails emp)
+        {            
+                if (emp != null)
+                {
+                    var employee = await _service.CreateEmployee(emp);
+                    return Ok("Employee is succesfully added. " + employee.EmpId);
+                }
 
-            return NoContent();
+            return NotFound();          
         }
 
         [HttpGet("{id}")]
@@ -75,6 +75,5 @@ namespace Dotnet5Traning.Controllers
             }
             return NotFound();
         }
-
     }
 }
