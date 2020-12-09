@@ -27,18 +27,24 @@ namespace Dotnet5Traning.Controllers
                     return Ok("Employee is succesfully added. " + employee.EmpId);
                 }
 
-            return NotFound();          
+            return NotFound("Employee details cannot be empty.");          
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(string id)
         {
-            var emp = await _service.GetEmployee(id);
-            if (emp != null)
+            if(!string.IsNullOrEmpty(id))
             {
-                return Ok(emp);
+                var emp = await _service.GetEmployee(id);
+                if (emp != null)
+                {
+                    return Ok(emp);
+                }
+                else
+                    return NotFound("Employee not found.");
             }
-            return NotFound();
+            
+            return NotFound("Employee Id is required.");
         }
 
         [HttpGet]
@@ -49,31 +55,43 @@ namespace Dotnet5Traning.Controllers
             {
                 return Ok(emp);
             }
-            return NotFound();
+            return NotFound("Zero Employee Found.");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDetails emp, string id)
         {
-            var employee = await _service.GetEmployee(id);
-            if (employee != null)
+            if(!string.IsNullOrEmpty(id))
             {
-                await _service.UpdateEmployee(emp, id);
-                return Ok(emp);
+                var employee = await _service.GetEmployee(id);
+                if (employee != null)
+                {
+                    await _service.UpdateEmployee(emp, id);
+                    return Ok(emp);
+                }
+                else
+                    return NotFound("Employee not found.");
             }
-            return NotFound();
+            
+            return NotFound("Employee Id cannot be empty.");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(string id)
         {
-            var employee = await _service.GetEmployee(id);
-            if (employee != null)
+            if (!string.IsNullOrEmpty(id))
             {
-                await _service.DeleteEmployee(id);
-                return Ok("Employee deleted.");
+                var employee = await _service.GetEmployee(id);
+                if (employee != null)
+                {
+                    await _service.DeleteEmployee(id);
+                    return Ok("Employee deleted successfully.");
+                }
+                else
+                    return NotFound("Employee not found.");
             }
-            return NotFound();
+
+            return NotFound("Employee Id cannot be null.");            
         }
     }
 }

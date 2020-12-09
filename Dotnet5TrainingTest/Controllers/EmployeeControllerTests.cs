@@ -49,39 +49,32 @@ namespace Dotnet5TrainingTest.Controllers
             this.mockRepository.VerifyAll();
         }
 
-        /*[Fact]
+        [Fact]
         public async Task CreateEmployee_SuccesfulyAdded_Error()
         {
             // Arrange
             var employeeController = this.CreateEmployeeController();
-            EmployeeDetails emp = null;
-                *//*new EmployeeDetails()
-            {
-                EmpName = "Shashwat",
-                EmpEmail = "",
-                EmpCity = "Chapra",
-                EmpCompany = "Agenty Analytics",
-                EmpContact = "9066740766",
-                EmpSalary = 20000
-            };*//*
-            //mockEmployeeService.Setup(i => i.CreateEmployee(emp)).ReturnsAsync(emp);
-            mockEmployeeService.Setup(x => x.CreateEmployee(emp)).ReturnsAsync(emp);
+            EmployeeDetails emp = null;            
             // Act
-            var result = (OkObjectResult) await employeeController.CreateEmployee(
+            var result = await employeeController.CreateEmployee(
                emp);
+            var data = result as NotFoundObjectResult;
             // Assert           
-            Assert.Equal(400, result.StatusCode);
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee details cannot be empty.", data.Value);
             this.mockRepository.VerifyAll();
-        }*/
+        }
 
         [Fact]
-        public async Task GetEmployeeByID_StateUnderTest_ExpectedBehavior()
+        public async Task GetEmployeeByID_StateUnderTest_EmployeeFound()
         {
             // Arrange
             var employeeController = this.CreateEmployeeController();
             mockEmployeeService
                 .Setup(x => x.GetEmployee(It.IsAny<string>()))
-                .ReturnsAsync(new EmployeeDetails() {
+                .ReturnsAsync(new EmployeeDetails()
+                {
                     EmpName = "Shashwat",
                     EmpEmail = "",
                     EmpCity = "Chapra",
@@ -104,7 +97,49 @@ namespace Dotnet5TrainingTest.Controllers
         }
 
         [Fact]
-        public async Task GetAllEmployees_StateUnderTest_ExpectedBehavior()
+        public async Task GetEmployeeByID_StateUnderTest_NotFound()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            EmployeeDetails emp = null;
+            mockEmployeeService
+                .Setup(x => x.GetEmployee(It.IsAny<string>()))
+                .ReturnsAsync(emp);
+            string id = "hb9dabh4js87dfjksf32h32sjkdhc";
+
+            // Act
+            var result = await employeeController.GetEmployee(
+                id);
+            var data = result as NotFoundObjectResult;
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee not found.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task GetEmployeeByID_StateUnderTest_EmpIdNull()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();            
+            string id = null;
+
+            // Act
+            var result = await employeeController.GetEmployee(
+                id);
+            var data = result as NotFoundObjectResult;
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee Id is required.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task GetAllEmployees_StateUnderTest_EmployeeFound()
         {
             // Arrange
             var employeeController = this.CreateEmployeeController();            
@@ -126,7 +161,27 @@ namespace Dotnet5TrainingTest.Controllers
         }
 
         [Fact]
-        public async Task UpdateEmployee_StateUnderTest_ExpectedBehavior()
+        public async Task GetAllEmployees_StateUnderTest_EmployeeNotFound()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            List<EmployeeDetails> emp = null;
+            mockEmployeeService
+                .Setup(i => i.GetAllEmployees())
+                .ReturnsAsync(emp);
+            // Act
+            var result = await employeeController.GetAllEmployees();
+            var data = result as NotFoundObjectResult;
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Zero Employee Found.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task UpdateEmployee_StateUnderTest_SuccesfullyUpdated()
         {
             // Arrange
             var employeeController = this.CreateEmployeeController();
@@ -158,7 +213,56 @@ namespace Dotnet5TrainingTest.Controllers
         }
 
         [Fact]
-        public async Task DeleteEmployee_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateEmployee_StateUnderTest_EmployeeIdNull()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            EmployeeDetails emp = new EmployeeDetails()
+            {
+                EmpName = "Shashwat",
+                EmpEmail = "",
+                EmpCity = "Chapra",
+                EmpCompany = "Agenty Analytics",
+                EmpContact = "9066740766",
+                EmpSalary = 20000
+            };
+            string id = null; ;
+            
+            // Act
+            var result = await employeeController.UpdateEmployee(
+                emp,
+                id);
+            var data = result as NotFoundObjectResult;
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee Id cannot be empty.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task UpdateEmployee_StateUnderTest_EmployeeNotFound()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            EmployeeDetails emp = null;
+            string id = "89783hf89735849fh0129837hfhf39";
+            mockEmployeeService.Setup(i => i.GetEmployee(It.IsAny<string>())).ReturnsAsync(emp);
+
+            // Act
+            var result = await employeeController.UpdateEmployee(
+                emp,
+                id);
+            var data = result as NotFoundObjectResult;
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee not found.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task DeleteEmployee_StateUnderTest_SuccesfullyDeleted()
         {
             // Arrange
             var employeeController = this.CreateEmployeeController();
@@ -184,7 +288,46 @@ namespace Dotnet5TrainingTest.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(data);
             Assert.Equal(200, data.StatusCode);
+            Assert.Equal("Employee deleted successfully.", data.Value);
             Assert.NotNull(data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task DeleteEmployee_StateUnderTest_EmployeeIdNull()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            string id = null;            
+            // Act
+            var result = await employeeController.DeleteEmployee(
+                id);
+            var data = result as NotFoundObjectResult;
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee Id cannot be null.", data.Value);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task DeleteEmployee_StateUnderTest_EmployeeNotFound()
+        {
+            // Arrange
+            var employeeController = this.CreateEmployeeController();
+            EmployeeDetails emp = null;
+            string id = "yf78345hrf348534hrfd92dj298";            
+            mockEmployeeService
+                .Setup(i => i.GetEmployee(It.IsAny<string>()))
+                .ReturnsAsync(emp);
+            // Act
+            var result = await employeeController.DeleteEmployee(
+                id);
+            var data = result as NotFoundObjectResult;
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(data);
+            Assert.Equal(404, data.StatusCode);
+            Assert.Equal("Employee not found.", data.Value);
             this.mockRepository.VerifyAll();
         }
     }
